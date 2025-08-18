@@ -1,0 +1,189 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Emerald Tappers Ultimate",
+   LoadingTitle = "Emerald Tappers",
+   LoadingSubtitle = "by zynx",
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = nil,
+      FileName = "ETU"
+   },
+   Discord = {
+      Enabled = false,
+      Invite = "noinvitelink",
+      RememberJoins = true
+   },
+   KeySystem = false,
+   KeySettings = {
+      Title = "Key | Youtube Hub",
+      Subtitle = "Key System",
+      Note = "Key In Discord Server",
+      FileName = "YoutubeHubKey1",
+      SaveKey = false,
+      GrabKeyFromSite = false,
+      Key = {"https://pastebin.com/raw/AtgzSPWK"}
+   }
+})
+
+local MainTab = Window:CreateTab("Main", nil)
+local MainSection = MainTab:CreateSection("Main")
+
+-------------------------------------------------
+-- AUTO CLICKER
+-------------------------------------------------
+local Toggle = MainTab:CreateToggle({
+   Name = "Auto Clicker",
+   CurrentValue = false,
+   Flag = "Toggle1",
+   Callback = function(Value)
+      _G.auto = Value
+
+      task.spawn(function()
+         while _G.auto do
+            game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Click"):FireServer()
+            task.wait(0.1)
+         end
+      end)
+   end,
+})
+
+-------------------------------------------------
+-- AUTO REBIRTH
+-------------------------------------------------
+local RebirthToggle = MainTab:CreateToggle({
+   Name = "Auto Rebirth",
+   CurrentValue = false,
+   Flag = "Toggle2",
+   Callback = function(Value)
+      _G.rebirth = Value
+
+      task.spawn(function()
+         while _G.rebirth do
+            local args
+
+            -- Highest → lowest (all rebirth buttons)
+            local rebirthButtons = {
+                225000000000, 70000000000, 12500000000, 2500000000,
+                500000000, 150000000, 40000000, 10000000,
+                3000000, 750000, 250000, 90000,
+                30000, 10000, 5000, 2500,
+                1000, 400, 150, 50,
+                20, 5, 1
+            }
+
+            for _, amount in ipairs(rebirthButtons) do
+               args = {[1] = amount}
+               break -- picks the highest (first in list)
+            end
+
+            if args then
+               local success, err = pcall(function()
+                   game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Rebirth"):FireServer(unpack(args))
+               end)
+               if not success then
+                   warn("Failed to rebirth with button "..args[1], err)
+               end
+            end
+
+            task.wait(0.5)
+         end
+      end)
+   end,
+})
+
+-- Auto Master toggle
+local MasterToggle = MainTab:CreateToggle({
+   Name = "Auto Master",
+   CurrentValue = false,
+   Flag = "ToggleMaster",
+   Callback = function(Value)
+      _G.automaster = Value
+      while _G.automaster do
+         task.wait(1) -- wait a second so it doesn’t spam crazy fast
+         game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Master"):FireServer()
+      end
+   end,
+})
+
+-- Auto Claim Both Chests toggle
+local AutoChestToggle = MainTab:CreateToggle({
+    Name = "Auto Claim Chests",
+    CurrentValue = false,
+    Flag = "ToggleAutoChests",
+    Callback = function(Value)
+        _G.autochest = Value
+
+        task.spawn(function()
+            while _G.autochest do
+                local chestTypes = {"Group", "Daily"} -- both chests
+
+                for _, chest in ipairs(chestTypes) do
+                    local args = {[1] = chest}
+                    local success, err = pcall(function()
+                        game:GetService("ReplicatedStorage"):WaitForChild("Functions"):WaitForChild("CollectChest"):InvokeServer(unpack(args))
+                    end)
+                    if not success then
+                        warn("Failed to claim chest:", chest, err)
+                    end
+                end
+
+                task.wait(5) -- repeat every 5 seconds
+            end
+        end)
+    end,
+})
+
+-- Auto Equip All Example Pets (for testing)
+local AutoEquipAll = MainTab:CreateButton({
+    Name = "Equip All Example Pets",
+    Callback = function()
+        local petIDs = {
+            "86vzVDAQ-r2N1300M-gPwjDo2e",
+            -- add more IDs here if needed
+        }
+
+        for _, petID in ipairs(petIDs) do
+            local args = {
+                [1] = petID,
+                [2] = true
+            }
+
+            local success, err = pcall(function()
+                game:GetService("ReplicatedStorage"):WaitForChild("Functions"):WaitForChild("EquipPet"):InvokeServer(unpack(args))
+            end)
+
+            if not success then
+                warn("Failed to equip pet:", petID, err)
+            end
+        end
+
+        print("All example pets attempted to equip!")
+    end,
+})
+
+-------------------------------------------------
+-- AUTO UPGRADE REBIRTH BUTTON
+-------------------------------------------------
+local UpgradeToggle = MainTab:CreateToggle({
+    Name = "Auto Upgrade Rebirth Button",
+    CurrentValue = false,
+    Flag = "ToggleUpgradeRebirthButton",
+    Callback = function(Value)
+        _G.autoupgraderebirth = Value
+
+        task.spawn(function()
+            while _G.autoupgraderebirth do
+                local success, err = pcall(function()
+                    game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("BuyUpgrade"):FireServer("Spawn", "RebirthButtons")
+                end)
+                if not success then
+                    warn("Failed to upgrade rebirth button:", err)
+                else
+                    print("Auto-upgraded rebirth button!")
+                end
+                task.wait(5) -- runs every 5 seconds
+            end
+        end)
+    end,
+})
