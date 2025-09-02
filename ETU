@@ -139,7 +139,7 @@ local AutoEquipAll = MainTab:CreateButton({
     Name = "Equip All Example Pets",
     Callback = function()
         local petIDs = {
-            "86vzVDAQ-r2N1300M-gPwjDo2e",
+            "1315g7UV-rM1cY40O-902626n8",
             -- add more IDs here if needed
         }
 
